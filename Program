@@ -1,0 +1,103 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
+namespace BuildingWealth
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            double currentNetworth, monthlyContributions, amountStock, amountBond, amountCash, rateStock, rateBond, inflation, temp, check;
+            int years;
+            string checkString;
+
+            //check for portfolio percentages
+            check = 100;
+
+            Console.WriteLine("What is your current liquid networth?\n (IE. Stocks, Cash, and Bonds)");
+            currentNetworth = Convert.ToDouble(Console.ReadLine());
+
+            Console.WriteLine("Roughly how much a month is contributed per month into savings?");
+            monthlyContributions =  Convert.ToDouble(Console.ReadLine());
+
+            Console.WriteLine("How many years until retirement?");
+            years = Convert.ToInt16(Console.ReadLine());
+
+            redo:
+
+            Console.WriteLine("What percent of your networth is in stocks?");
+            temp = Convert.ToDouble(Console.ReadLine());
+
+            amountStock = temp;
+            check -= temp;
+
+            Console.WriteLine("What percent is in bonds?");
+            temp = Convert.ToDouble(Console.ReadLine());
+
+            amountBond = temp;
+            check -= temp;
+
+            amountCash = check;
+            
+            Console.WriteLine("So {0}% of your portfolio is in cash correct? (Y or N)", amountCash);
+            checkString = Console.ReadLine();
+            if ((checkString == "Y" | checkString == "y"))
+            {
+                goto nextStep;
+            }
+           else
+            {
+               Console.WriteLine("Invalid answer or values, please re-enter amounts.");
+               check = 100;
+               goto redo;
+            }
+
+        nextStep:
+
+
+            //Converting the percentages into dollar amounts
+
+            double amountBond2, amountStock2;
+
+            amountCash = currentNetworth * (check * .01);
+            amountBond2 = currentNetworth * (amountBond * .01);
+            amountStock2 = currentNetworth * (amountStock * .01);
+
+            Console.WriteLine("Cash = {0} Stocks = {1} Bonds = {2}", amountCash, amountStock2, amountBond2);
+            Console.ReadKey();
+
+            amountStock = amountStock2;
+            amountBond = amountBond2;
+
+            double futureNetworth;
+
+            //bond value
+
+            rateBond = .05;
+            rateStock = .11;
+
+            Console.WriteLine("The historical average return of bonds is 5% from long term bonds and 11% from equties.");
+
+            for (int i = 0; i < years; i++)
+            {
+                
+                amountBond += amountBond * rateBond;
+
+                amountStock += amountStock * rateStock;
+                     
+            }
+
+            futureNetworth = amountCash + amountBond + amountStock;
+            
+
+            Console.WriteLine("${0} after {1} years", futureNetworth, years);
+            Console.ReadKey();
+
+        }
+
+    }
+}
