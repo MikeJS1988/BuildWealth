@@ -11,7 +11,7 @@ namespace BuildingWealth
     {
         static void Main(string[] args)
         {
-            double currentNetworth, monthlyContributions, amountStock, amountBond, amountCash, rateStock, rateBond, inflation, temp, check;
+            double currentNetworth, monthlyContributions, amountStock, amountBond, amountCash, rateStock, rateBond, inflation, temp, check, checkStock, checkBonds; 
             int years;
             string checkString;
 
@@ -21,8 +21,10 @@ namespace BuildingWealth
             Console.WriteLine("What is your current liquid networth?\n (IE. Stocks, Cash, and Bonds)");
             currentNetworth = Convert.ToDouble(Console.ReadLine());
 
-            Console.WriteLine("Roughly how much a month is contributed per month into savings?");
+            Console.WriteLine("Roughly how much a month is contributed per month into stocks, bonds, and savings?");
             monthlyContributions =  Convert.ToDouble(Console.ReadLine());
+
+            monthlyContributions = monthlyContributions * 12;
 
             Console.WriteLine("How many years until retirement?");
             years = Convert.ToInt16(Console.ReadLine());
@@ -33,12 +35,14 @@ namespace BuildingWealth
             temp = Convert.ToDouble(Console.ReadLine());
 
             amountStock = temp;
+            checkStock = temp;
             check -= temp;
 
             Console.WriteLine("What percent is in bonds?");
             temp = Convert.ToDouble(Console.ReadLine());
 
             amountBond = temp;
+            checkBonds = temp;
             check -= temp;
 
             amountCash = check;
@@ -51,7 +55,7 @@ namespace BuildingWealth
             }
            else
             {
-               Console.WriteLine("Invalid answer or values, please re-enter amounts.");
+               Console.WriteLine("Invalid answer or values, please re-enter amounts. Percentage doesn't equal 100");
                check = 100;
                goto redo;
             }
@@ -84,18 +88,51 @@ namespace BuildingWealth
 
             for (int i = 0; i < years; i++)
             {
-                
+             
+                //calculating the rate of returns per year
+                   
                 amountBond += amountBond * rateBond;
 
                 amountStock += amountStock * rateStock;
-                     
+
+                //Adding in the yearly contributions
+
+                amountBond += monthlyContributions * (checkBonds * .01);
+
+                amountStock += monthlyContributions * (checkStock * .01);
+
+                amountCash += monthlyContributions * (check * .01);
             }
+
 
             futureNetworth = amountCash + amountBond + amountStock;
             
 
-            Console.WriteLine("${0} after {1} years", futureNetworth, years);
+            Console.WriteLine("{0:C} after {1} years", futureNetworth, years);
             Console.ReadKey();
+
+            Console.WriteLine("Would you like to adjust the amount for inflation?");
+            checkString = Console.ReadLine();
+
+            double inflationAdjustedWorth;
+
+            if ((checkString == "Y" | checkString == "y"))
+            {
+                for (int i = 0; i < years; i++)
+                {
+                    inflationAdjustedWorth = futureNetworth;
+                     futureNetworth = futureNetworth - (futureNetworth * .02);
+                    inflationAdjustedWorth = futureNetworth;
+                }
+
+               
+                Console.WriteLine("Your networth after being inflation adjusted is {0:C} after {1}.", futureNetworth, years);
+                Console.ReadKey();
+            }
+            else
+            {
+                Console.WriteLine("Dont let that inflation creep up on you.");
+            }
 
         }
 
